@@ -1,139 +1,88 @@
-const max = 100;
-const min = 1;
-const maxGuesses = 10;
-let prevTime, stopwatchInterval, elapsedTime = 0;
+'use strict';
 
-let randomNumber = Math.floor(Math.random() * max) + min;
-const timePlace = document.querySelector('.time');
-const guessCounter = document.querySelector('.guessCount');
-const guesses = document.querySelector('.guesses');
-const lastResult = document.querySelector('.lastResult');
-const lowOrHi = document.querySelector('.lowOrHi');
+const coursesEn = ["Hamburger, cream sauce and boiled potates",
+                "Goan style fish curry and whole grain rice",
+                "Vegan Chili sin carne and whole grain rice",
+                "Broccoli puree soup, side salad with two napas",
+                "Lunch baguette with BBQ-turkey filling",
+                "Cheese / Chicken / Vege / Halloum burger and french fries"];
+const coursesFi = ["Jauhelihapihvi, ruskeaa kermakastiketta ja keitettyä perunaa",
+                "Goalaista kalacurrya ja täysjyväriisiä",
+                "vegaani Chili sin carne ja täysjyväriisi",
+                "Parsakeittoa,lisäkesalaatti kahdella napaksella",
+                "Lounaspatonki kalkkunatäytteellä",
+                "Juusto / Kana / Kasvis / Halloumi burgeri ja ranskalaiset"];
 
-const guessSubmit = document.querySelector('.guessSubmit');
-const guessField = document.querySelector('.guessField');
 
-let guessCount = 1;
-let resetButton;
-guessField.focus();
+const fi = document.getElementById('fi_click');
+const en = document.getElementById('en_click');
+const asc = document.getElementById('asc');
+const desc = document.getElementById('desc');
+const random = document.getElementById('random');
+const change_text = document.getElementById('text');
 
-let tries = 0;
-guessCounter.textContent = 0;
+fi.addEventListener('click', () => {
+  language(fi,en);
+}, false);
 
-const checkGuess = () => {
+en.addEventListener('click', () => {
+  language(en,fi);
+}, false);
 
-  guessCounter.textContent = 0;
 
-  tries++;
-  guessCounter.textContent = tries;
-
-  console.log(tries);
-
-  if (!stopwatchInterval) {
-    stopwatchInterval = setInterval(function () {
-      if (!prevTime) {
-        prevTime = Date.now();
-      }
-      console.log(prevTime);
-      elapsedTime += Date.now() - prevTime;
-      prevTime = Date.now();
-      
-      updateTime();
-    }, 50);
-  } 
-
-  const userGuess = Number(guessField.value);
-  if (guessCount === 1) {
-    guesses.textContent = 'Previous guesses: ';
+const language = (languageOn, languageOff) => {
+  if (!languageOn.classList.contains('current_lang')){
+    languageOn.classList.add('current_lang');
+    languageOff.classList.remove('current_lang');
   }
-  guesses.textContent += userGuess + ' ';
+  if (languageOn.innerHTML == 'FI'){
+    change_text.classList.add('fi');
+    change_text.classList.remove('en');
+    change_text.innerHTML = coursesFi;
+  }
+  else if (languageOn.innerHTML == 'EN'){
+    change_text.classList.add('en');
+    change_text.classList.remove('fi');
+    change_text.innerHTML = coursesEn;
+  }
+};
 
-  if (userGuess === randomNumber) {
-    lastResult.textContent = 'Congratulations! You got it right!';
-    lastResult.style.backgroundColor = 'green';
-    lowOrHi.textContent = '';
-    setGameOver();
-  } else if (guessCount === maxGuesses) {
-    lastResult.textContent = '!!!GAME OVER!!!';
-    lowOrHi.textContent = '';
-    setGameOver();
-  } else {
-    lastResult.textContent = 'Wrong!';
-    lastResult.style.backgroundColor = 'red';
-    if(userGuess < randomNumber) {
-      lowOrHi.textContent = 'Last guess was too low!';
-    } else if(userGuess > randomNumber) {
-      lowOrHi.textContent = 'Last guess was too high!';
+
+asc.addEventListener('click', () => {
+  sort();
+});
+
+desc.addEventListener('click', () => {
+  reverse();
+});
+
+const sort = () => {
+  if (change_text.innerHTML == coursesFi){
+    coursesFi.sort();
+  document.getElementById('text').innerHTML = coursesFi;
+  } else if (change_text.innerHTML == coursesEn){
+    coursesEn.sort();
+  document.getElementById('text').innerHTML = coursesEn;
+  }
+};
+
+const reverse = () => {
+  if (change_text.innerHTML == coursesFi){
+    coursesFi.reverse();
+  document.getElementById('text').innerHTML = coursesFi;
+  } else if (change_text.innerHTML == coursesEn){
+    coursesEn.reverse();
+  document.getElementById('text').innerHTML = coursesEn;
+  }
+};
+
+random.addEventListener('click', () => {
+  if (change_text.innerHTML == coursesFi){
+    const randomFood = coursesFi[Math.floor(Math.random() * coursesFi.length)];
+    document.getElementById('text').innerHTML = randomFood;
+  } else if (change_text.innerHTML == coursesEn){
+    const randomFood = coursesEn[Math.floor(Math.random() * coursesEn.length)];
+    document.getElementById('text').innerHTML = randomFood;
     }
-  } 
-  
-  
-  
-  
+});
 
-  guessCount++;
-  guessField.value = '';
-  guessField.focus();
-
-  
-};
-
-guessSubmit.addEventListener('click', checkGuess);
-
-const container = document.querySelector('.container');
-
-const setGameOver = () => {
-  guessField.disabled = true;
-  guessSubmit.disabled = true;
-  resetButton = document.createElement('button');
-  resetButton.textContent = 'Start new game';
-  container.append(resetButton);
-  resetButton.addEventListener('click', resetGame);
-  if (stopwatchInterval) {
-    clearInterval(stopwatchInterval);
-    stopwatchInterval = null;
-  }
-  prevTime = null;
-};
-
-const resetGame = () => {
-  guessCount = 1;
-
-  const resetParas = document.querySelectorAll('.resultParas p');
-  for (const resetPara of resetParas) {
-    resetPara.textContent = '';
-  };
-
-  resetButton.parentNode.removeChild(resetButton);
-
-  guessField.disabled = false;
-  guessSubmit.disabled = false;
-  guessField.value = '';
-  guessField.focus();
-
-  lastResult.style.backgroundColor = 'white';
-  guessCounter.textContent = 0;
-
-  randomNumber = Math.floor(Math.random() * max) + min;
-  elapsedTime = 0;
-  updateTime();
-};
-
-
-
-const updateTime = () => {
-  let tempTime = elapsedTime;
-  const milliseconds = tempTime % 1000;
-  tempTime = Math.floor(tempTime / 1000);
-  const seconds = tempTime % 60;
-  tempTime = Math.floor(tempTime / 60);
-  const minutes = tempTime % 60;
-  tempTime = Math.floor(tempTime / 60);
-  const hours = tempTime % 60;
-  
-  let time = hours + " : " + minutes + " : " + seconds + "." + milliseconds;
-  
-  timePlace.textContent = time;
-};
-
-updateTime();
