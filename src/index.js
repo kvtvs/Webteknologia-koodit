@@ -2,8 +2,6 @@
 
 import LunchMenu from '../sodexo-day-example.json';
 console.log(LunchMenu);
-let itemEN;
-let itemFI;
 const coursesFI = [];
 const coursesEN = [];
 
