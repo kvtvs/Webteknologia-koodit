@@ -1,86 +1,88 @@
-'use strict';
+import SodexoData from './modules/sodexo-data';
+import FazerData from './modules/sodexo-data';
 
-import LunchMenu from '../sodexo-day-example.json';
-console.log(LunchMenu);
-const coursesFI = [];
-const coursesEN = [];
+let language = 'fi';
+let currentMenu1 = SodexoData.coursesFi;
+let currentMenu2 = FazerData.coursesFi;
 
-for (let i = 1; i <= 9; i++){
-  coursesFI.push(LunchMenu.courses[i].title_fi);
-  console.log(coursesFI);
-
-  coursesEN.push(LunchMenu.courses[i].title_en);
-  console.log(coursesEN);
-};
-
-const fi = document.getElementById('fi_click');
-const en = document.getElementById('en_click');
-const asc = document.getElementById('asc');
-const desc = document.getElementById('desc');
-const random = document.getElementById('random');
-const change_text = document.getElementById('text');
-
-fi.addEventListener('click', () => {
-  language(fi,en);
-}, false);
-
-en.addEventListener('click', () => {
-  language(en,fi);
-}, false);
-
-
-const language = (languageOn, languageOff) => {
-  if (!languageOn.classList.contains('current_lang')){
-    languageOn.classList.add('current_lang');
-    languageOff.classList.remove('current_lang');
+/**
+ * Renders menu courses on page
+ */
+const renderMenu = () => {
+  const ulElement1 = document.querySelector('#sodexo');
+  ulElement1.innerHTML = '';
+  const ulElement2 = document.querySelector('#fazer');
+  ulElement2.innerHTML = '';
+  for (const item of currentMenu1) {
+    const listElement = document.createElement('li');
+    listElement.textContent = item;
+    ulElement1.appendChild(listElement);
   }
-  if (languageOn.innerHTML == 'FI'){
-    change_text.classList.add('fi');
-    change_text.classList.remove('en');
-    change_text.innerHTML = coursesFI;
-  }
-  else if (languageOn.innerHTML == 'EN'){
-    change_text.classList.add('en');
-    change_text.classList.remove('fi');
-    change_text.innerHTML = coursesEN;
+  for (const item of currentMenu2) {
+    const listElement = document.createElement('li');
+    listElement.textContent = item;
+    ulElement2.appendChild(listElement);
   }
 };
 
-
-asc.addEventListener('click', () => {
-  sort();
-});
-
-desc.addEventListener('click', () => {
-  reverse();
-});
-
-const sort = () => {
-  if (change_text.innerHTML == coursesFI){
-    coursesFI.sort();
-  document.getElementById('text').innerHTML = coursesFI;
-  } else if (change_text.innerHTML == coursesEN){
-    coursesEN.sort();
-  document.getElementById('text').innerHTML = coursesEN;
+/**
+ * Toggle between en/fi
+ */
+const switchLanguage = () => {
+  if (language === 'fi') {
+    language = 'en';
+    currentMenu1 = SodexoData.coursesEn;
+  } else {
+    language = 'fi';
+    currentMenu1 = SodexoData.coursesFi;
   }
 };
 
-const reverse = () => {
-  if (change_text.innerHTML == coursesFI){
-    coursesFI.reverse();
-  document.getElementById('text').innerHTML = coursesFI;
-  } else if (change_text.innerHTML == coursesEN){
-    coursesEN.reverse();
-  document.getElementById('text').innerHTML = coursesEN;
+/**
+ * Sort courses alphapetically
+ *
+ * @param {Array} courses menu array
+ * @param {string} order 'asc'/'desc'
+ * @returns {Array} sorted menu
+ */
+const sortCourses = (courses, order = 'asc') => {
+  const sortedCourses = courses.sort();
+  if (order === 'desc') {
+    sortedCourses.reverse();
   }
+  return sortedCourses;
 };
 
-random.addEventListener('click', () => {
-  if (change_text.innerHTML == coursesFI){
-    const randomFood = coursesFI[Math.floor(Math.random() * coursesFI.length)];
-    document.getElementById('text').innerHTML = randomFood;
-  } else if (change_text.innerHTML == coursesEN){
-    const randomFood = coursesEN[Math.floor(Math.random() * coursesEN.length)];
-    document.getElementById('text').innerHTML = randomFood;
-    }
-});
+/**
+ * Picks a random dish
+ *
+ * @param {Array} courses menu
+ * @returns {string} random dish
+ */
+const pickARandomCourse = courses => {
+  const randomIndex = Math.floor(Math.random() * courses.length);
+  return courses[randomIndex];
+};
+
+/**
+ * Initialize application
+ */
+const init = () => {
+  renderMenu();
+  // Event listeners for buttons
+  document.querySelector('#switch-lang').addEventListener('click', () => {
+    switchLanguage();
+    renderMenu();
+  });
+  document.querySelector('#pick-random').addEventListener('click', () => {
+    // choose random dish & display it
+    alert(pickARandomCourse(currentMenu1));
+
+  });
+  document.querySelector('#sort-menu').addEventListener('click', () => {
+    // currentMenu = sortCourses(currentMenu);
+    currentMenu1 = sortCourses(currentMenu1, 'desc');
+    renderMenu();
+  });
+};
+init();
