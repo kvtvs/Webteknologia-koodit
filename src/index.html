@@ -2,91 +2,17 @@
 <html>
   <head>
     <meta charset="utf-8">
-
-    <title>Number guessing game</title>
-
-    <style>
-
-      html, body {
-        width: 100%;
-        height: 100%;
-        margin: auto 0;
-        padding: 0;
-      }
-
-      .container {
-        width: 50%;
-        height: auto;
-        background-color: white;
-        margin: 0 auto;
-        text-align: center;
-      }
-
-      h1 {
-        font-family: 'Neonderthaw', cursive;
-        margin-top: 0;
-        padding-top: 50px;
-        margin-bottom: 50px;
-        color:darkred;
-      }
-
-      p, label {
-        font-family: 'Montserrat', sans-serif;
-      }
-
-      p {
-        width: 100%;
-        margin: auto;
-        margin-bottom: 30px;
-      }
-
-      ul li {
-        text-decoration: none;
-        list-style-type: none;
-        font-family: 'Montserrat', sans-serif;
-      }
-
-      button {
-        margin: auto;
-        padding: 10px;
-        background-color: white;
-        border: darkred 2px solid;
-        color: darkred;
-        font-family: 'Montserrat', sans-serif;
-      }
-
-      .guessHistory {
-        margin-top: 25px;
-      }
-
-    </style>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Neonderthaw&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap" rel="stylesheet">
+    <title>Week2-Task2</title>
   </head>
 
   <body>
-    <div class="container">
-    <h1>Number guessing game</h1>
+  
+    <form>
+      <label for="newFood">Uusi ruoka:</label>
+      <input type="text" id="newFood" name="newFood">
+    </form>
 
-    <p>Choose a number between 0-10. Then start the game and let the computer guess your number!</p>
-
-    <div class="buttons">
-      <input type="button" value="Start" class="button" id="buttonStart"/>
-      <input type="button" value="Lower" class="button" id="buttonLower"/>
-      <input type="button" value="Higher" class="button" id="buttonHigher"/>
-      <input type="button" value="Correct" class="button" id="buttonCorrect"/>
-    </div>
-
-    <div class="guessHistory">
-      <p>Computer's previous guesses</p>
-      <ul id="historyList"></ul>
-    </div>
-
-    <div><p id="final"></p></div>
-  </div>
+    <p id="foods"></p>
 
     <script src="index.js"></script>
   </body>
