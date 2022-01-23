@@ -1,5 +1,5 @@
 import SodexoData from './modules/sodexo-data';
-import FazerData from './modules/sodexo-data';
+import FazerData from './modules/fazer-data';
 
 let language = 'fi';
 let currentMenu1 = SodexoData.coursesFi;
@@ -32,9 +32,11 @@ const switchLanguage = () => {
   if (language === 'fi') {
     language = 'en';
     currentMenu1 = SodexoData.coursesEn;
+    currentMenu2 = FazerData.fazerCoursesEN;
   } else {
     language = 'fi';
     currentMenu1 = SodexoData.coursesFi;
+    currentMenu2 = FazerData.fazerCoursesFI;
   }
 };
 
@@ -76,12 +78,13 @@ const init = () => {
   });
   document.querySelector('#pick-random').addEventListener('click', () => {
     // choose random dish & display it
-    alert(pickARandomCourse(currentMenu1));
+    alert(pickARandomCourse(currentMenu1, currentMenu2));
 
   });
   document.querySelector('#sort-menu').addEventListener('click', () => {
     // currentMenu = sortCourses(currentMenu);
     currentMenu1 = sortCourses(currentMenu1, 'desc');
+    currentMenu2 = sortCourses(currentMenu2, 'desc');
     renderMenu();
   });
 };
