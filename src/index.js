@@ -1,139 +1,104 @@
-const max = 100;
-const min = 1;
-const maxGuesses = 10;
-let prevTime, stopwatchInterval, elapsedTime = 0;
+/** THE ALGORITHM:
+ * The player decides a number between 0-10. Then the player starts the game and computer starts taking guesses on
+ * the number. The player has to tell the computer after every guess if the guess was too low, too high or correct one.
+ * When computer guesses the correct answer, it shows how many tries it took to get it.
+ */
 
-let randomNumber = Math.floor(Math.random() * max) + min;
-const timePlace = document.querySelector('.time');
-const guessCounter = document.querySelector('.guessCount');
-const guesses = document.querySelector('.guesses');
-const lastResult = document.querySelector('.lastResult');
-const lowOrHi = document.querySelector('.lowOrHi');
+/**
+ * OTHER ANSWERS:
+ * average guess count:
+ * minimum guess count: 1
+ * maximum guess count:
+ */
 
-const guessSubmit = document.querySelector('.guessSubmit');
-const guessField = document.querySelector('.guessField');
+// setting up global variables, defining buttons, disabling some buttons before starting the game
+let computerGuess = 0;
+let numberOfGuesses = 0;
+let currentGuess = -1;
+let min = 0;
+let max = 10;
+const tries = [];
 
-let guessCount = 1;
-let resetButton;
-guessField.focus();
+const startButton = document.getElementById('buttonStart');
+const lowerButton = document.getElementById('buttonLower');
+const higherButton = document.getElementById('buttonHigher');
+const correctButton = document.getElementById('buttonCorrect');
 
-let tries = 0;
-guessCounter.textContent = 0;
+lowerButton.disabled = true;
+higherButton.disabled = true;
+correctButton.disabled = true;
 
-const checkGuess = () => {
+//reset everything
+startButton.addEventListener('click', newGame);
 
-  guessCounter.textContent = 0;
+function newGame() {
+  computerGuess = 0;
+  numberOfGuesses = 1;
+  min = 0;
+  max = 10;
 
-  tries++;
-  guessCounter.textContent = tries;
+  startButton.disabled = true;
+  lowerButton.disabled = false;
+  higherButton.disabled = false;
+  correctButton.disabled = false;
+  
+  document.getElementById("historyList").innerHTML = '';
+// the computer automaticly gives first guess
+  guess();
+}
 
+function guess() {
+  // generate the guess between min and max
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  currentGuess = Math.floor(Math.random() * (max - min)) + min;
+
+  // tell user the guess
+  document.getElementById("historyList").innerHTML = "<li>" + currentGuess + "</li>";
+  console.log(currentGuess);
+  // save the guess to the array
+  tries.push(currentGuess);
   console.log(tries);
-
-  if (!stopwatchInterval) {
-    stopwatchInterval = setInterval(function () {
-      if (!prevTime) {
-        prevTime = Date.now();
-      }
-      console.log(prevTime);
-      elapsedTime += Date.now() - prevTime;
-      prevTime = Date.now();
-      
-      updateTime();
-    }, 50);
-  } 
-
-  const userGuess = Number(guessField.value);
-  if (guessCount === 1) {
-    guesses.textContent = 'Previous guesses: ';
-  }
-  guesses.textContent += userGuess + ' ';
-
-  if (userGuess === randomNumber) {
-    lastResult.textContent = 'Congratulations! You got it right!';
-    lastResult.style.backgroundColor = 'green';
-    lowOrHi.textContent = '';
-    setGameOver();
-  } else if (guessCount === maxGuesses) {
-    lastResult.textContent = '!!!GAME OVER!!!';
-    lowOrHi.textContent = '';
-    setGameOver();
-  } else {
-    lastResult.textContent = 'Wrong!';
-    lastResult.style.backgroundColor = 'red';
-    if(userGuess < randomNumber) {
-      lowOrHi.textContent = 'Last guess was too low!';
-    } else if(userGuess > randomNumber) {
-      lowOrHi.textContent = 'Last guess was too high!';
-    }
-  } 
-  
-  
-  
-  
-
-  guessCount++;
-  guessField.value = '';
-  guessField.focus();
-
-  
-};
-
-guessSubmit.addEventListener('click', checkGuess);
-
-const container = document.querySelector('.container');
-
-const setGameOver = () => {
-  guessField.disabled = true;
-  guessSubmit.disabled = true;
-  resetButton = document.createElement('button');
-  resetButton.textContent = 'Start new game';
-  container.append(resetButton);
-  resetButton.addEventListener('click', resetGame);
-  if (stopwatchInterval) {
-    clearInterval(stopwatchInterval);
-    stopwatchInterval = null;
-  }
-  prevTime = null;
-};
-
-const resetGame = () => {
-  guessCount = 1;
-
-  const resetParas = document.querySelectorAll('.resultParas p');
-  for (const resetPara of resetParas) {
-    resetPara.textContent = '';
-  };
-
-  resetButton.parentNode.removeChild(resetButton);
-
-  guessField.disabled = false;
-  guessSubmit.disabled = false;
-  guessField.value = '';
-  guessField.focus();
-
-  lastResult.style.backgroundColor = 'white';
-  guessCounter.textContent = 0;
-
-  randomNumber = Math.floor(Math.random() * max) + min;
-  elapsedTime = 0;
-  updateTime();
-};
+}
 
 
+// the guess was too high
+lowerButton.addEventListener('click', lower);
 
-const updateTime = () => {
-  let tempTime = elapsedTime;
-  const milliseconds = tempTime % 1000;
-  tempTime = Math.floor(tempTime / 1000);
-  const seconds = tempTime % 60;
-  tempTime = Math.floor(tempTime / 60);
-  const minutes = tempTime % 60;
-  tempTime = Math.floor(tempTime / 60);
-  const hours = tempTime % 60;
-  
-  let time = hours + " : " + minutes + " : " + seconds + "." + milliseconds;
-  
-  timePlace.textContent = time;
-};
+function lower() {
+  // take a new guess that is lower than the previous one
+  max = currentGuess - 1;
 
-updateTime();
+  // record the next guess
+  document.getElementById("historyList").innerHTML += "<li>" + currentGuess + "</li>";
+  guess();
+}
+
+
+// the guess was too low
+higherButton.addEventListener('click', higher);
+
+function higher() {
+  // take a new guess that is higher that the previous one
+  min = currentGuess + 1;
+
+  // record the next guess
+  document.getElementById("historyList").innerHTML += "<li>" + currentGuess + "</li>";
+  guess();
+}
+
+
+// wohoo, the guess was correct
+correctButton.addEventListener('click', correct);
+
+function correct() {
+  // display the correct answer 
+  document.getElementById("historyList").innerHTML += "<li>" + currentGuess + " was correct answer!</li>";
+  // disable some buttons and give out option to start again
+  startButton.disabled = false;
+  lowerButton.disabled = true;
+  higherButton.disabled = true;
+  correctButton.disabled = true;
+  // show how many tries it took to get the correct answer
+  document.getElementById("final").innerHTML = "It took " + tries.length + " tries to get the correct answer";
+}

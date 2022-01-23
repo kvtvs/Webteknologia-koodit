@@ -40,17 +40,10 @@
         margin-bottom: 30px;
       }
 
-      .form {
-        margin-bottom: 30px;
-      }
-
-      .guessSubmit {
+      ul li {
+        text-decoration: none;
+        list-style-type: none;
         font-family: 'Montserrat', sans-serif;
-      }
-
-      .lastResult {
-        color: white;
-        padding: 3px;
       }
 
       button {
@@ -60,6 +53,10 @@
         border: darkred 2px solid;
         color: darkred;
         font-family: 'Montserrat', sans-serif;
+      }
+
+      .guessHistory {
+        margin-top: 25px;
       }
 
     </style>
@@ -74,21 +71,21 @@
     <div class="container">
     <h1>Number guessing game</h1>
 
-    <p>We have selected a random number between 1 and 100. See if you can guess it in 10 turns or fewer. We'll tell you if your guess was too high or too low.</p>
+    <p>Choose a number between 0-10. Then start the game and let the computer guess your number!</p>
 
-    <div class="form">
-      <label for="guessField">Enter a guess: </label>
-      <input type="text" id="guessField" class="guessField">
-      <input type="submit" value="Submit guess" class="guessSubmit">
+    <div class="buttons">
+      <input type="button" value="Start" class="button" id="buttonStart"/>
+      <input type="button" value="Lower" class="button" id="buttonLower"/>
+      <input type="button" value="Higher" class="button" id="buttonHigher"/>
+      <input type="button" value="Correct" class="button" id="buttonCorrect"/>
     </div>
 
-    <div class="resultParas">
-      <p class="time"></p>
-      <p class="guessCount"></p>
-      <p class="guesses"></p>
-      <p class="lastResult"></p>
-      <p class="lowOrHi"></p>
+    <div class="guessHistory">
+      <p>Computer's previous guesses</p>
+      <ul id="historyList"></ul>
     </div>
+
+    <div><p id="final"></p></div>
   </div>
 
     <script src="index.js"></script>
