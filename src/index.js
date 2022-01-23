@@ -6,9 +6,9 @@
 
 /**
  * OTHER ANSWERS:
- * average guess count:
+ * average guess count: 3
  * minimum guess count: 1
- * maximum guess count:
+ * maximum guess count: 11
  */
 
 // setting up global variables, defining buttons, disabling some buttons before starting the game
@@ -36,6 +36,7 @@ function newGame() {
   numberOfGuesses = 1;
   min = 0;
   max = 10;
+  tries.length = 0;
 
   startButton.disabled = true;
   lowerButton.disabled = false;
@@ -43,6 +44,7 @@ function newGame() {
   correctButton.disabled = false;
   
   document.getElementById("historyList").innerHTML = '';
+  document.getElementById("final").innerHTML = '';
 // the computer automaticly gives first guess
   guess();
 }
