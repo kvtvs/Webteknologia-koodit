@@ -1,91 +1,78 @@
-import SodexoData from './modules/sodexo-data';
-import FazerData from './modules/fazer-data';
+ //Task 1 - i
 
-let language = 'fi';
-let currentMenu1 = SodexoData.coursesFi;
-let currentMenu2 = FazerData.coursesFi;
+const letters = [];
 
-/**
- * Renders menu courses on page
- */
-const renderMenu = () => {
-  const ulElement1 = document.querySelector('#sodexo');
-  ulElement1.innerHTML = '';
-  const ulElement2 = document.querySelector('#fazer');
-  ulElement2.innerHTML = '';
-  for (const item of currentMenu1) {
-    const listElement = document.createElement('li');
-    listElement.textContent = item;
-    ulElement1.appendChild(listElement);
-  }
-  for (const item of currentMenu2) {
-    const listElement = document.createElement('li');
-    listElement.textContent = item;
-    ulElement2.appendChild(listElement);
-  }
+document.addEventListener('keydown', event => {
+
+  let pressedKey = event.key;
+  //console.log('keydown:', event.key, event.keyCode);
+
+  letters.push(pressedKey);
+  console.log(letters);
+
+  if(letters.join('') == 'hello'){
+    alert('You typed hello!');
+  };
+
+});
+
+// Task 1 - ii
+
+document.addEventListener('dblclick', event => {
+  console.log(`Mouse X: ${event.clientX}, Mouse Y: ${event.clientY}`);
+});
+
+// Task 1 - iii
+
+const movingBox = document.querySelector('#box');
+const textBox = document.querySelector('#text');
+
+movingBox.addEventListener('mouseover', event => {  
+
+  textBox.innerHTML = "Hahahhahahaha!";
+  
+});
+
+movingBox.addEventListener('mouseout', event => {  
+
+  textBox.innerHTML = "Please do not tickle me!";
+  
+});
+
+
+// Task 1 - iv
+
+const hurryMessage = () => {
+  alert('Hurry up!');
 };
 
-/**
- * Toggle between en/fi
- */
-const switchLanguage = () => {
-  if (language === 'fi') {
-    language = 'en';
-    currentMenu1 = SodexoData.coursesEn;
-    currentMenu2 = FazerData.fazerCoursesEN;
-  } else {
-    language = 'fi';
-    currentMenu1 = SodexoData.coursesFi;
-    currentMenu2 = FazerData.fazerCoursesFI;
-  }
+const timer = setTimeout(hurryMessage, 15000);
+
+
+// Task 1 - v
+
+const idleTime = 0;
+
+const idleAlert = () => {
+  alert('Are you still there?');
 };
 
-/**
- * Sort courses alphapetically
- *
- * @param {Array} courses menu array
- * @param {string} order 'asc'/'desc'
- * @returns {Array} sorted menu
- */
-const sortCourses = (courses, order = 'asc') => {
-  const sortedCourses = courses.sort();
-  if (order === 'desc') {
-    sortedCourses.reverse();
-  }
-  return sortedCourses;
-};
+const idleTimer = () => {
 
-/**
- * Picks a random dish
- *
- * @param {Array} courses menu
- * @returns {string} random dish
- */
-const pickARandomCourse = courses => {
-  const randomIndex = Math.floor(Math.random() * courses.length);
-  return courses[randomIndex];
-};
+  const timer = setTimeout(timerIncrement, 15000);
 
-/**
- * Initialize application
- */
-const init = () => {
-  renderMenu();
-  // Event listeners for buttons
-  document.querySelector('#switch-lang').addEventListener('click', () => {
-    switchLanguage();
-    renderMenu();
+  document.addEventListener('mousemove', () =>{
+    idleTime = 0;
   });
-  document.querySelector('#pick-random').addEventListener('click', () => {
-    // choose random dish & display it
-    alert(pickARandomCourse(currentMenu1, currentMenu2));
-
-  });
-  document.querySelector('#sort-menu').addEventListener('click', () => {
-    // currentMenu = sortCourses(currentMenu);
-    currentMenu1 = sortCourses(currentMenu1, 'desc');
-    currentMenu2 = sortCourses(currentMenu2, 'desc');
-    renderMenu();
+  document.addEventListener('keydown', () =>{
+    idleTime = 0;
   });
 };
-init();
+
+const timerIncrement = () =>{
+  idleTime += 1;
+  if (idleTime == 1){
+    idleAlert();
+  };
+};  
+
