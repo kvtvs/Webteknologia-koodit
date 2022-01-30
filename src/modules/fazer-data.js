@@ -1,59 +1,30 @@
-import FazerLunchMenuFi from '../assets/fazer-day-example_fi.json';
-import FazerLunchMenuEn from '../assets/fazer-day-example-en.json';
+import FazerLunchMenuFi from '../assets/fazer-week-example-fi.json';
+import FazerLunchMenuEn from '../assets/fazer-week-example-en.json';
 
-const parseFazerLunchMenuFi = () => {
-    const LunchMenus = FazerLunchMenuFi.LunchMenus;
+/**
+ * Parses Fazer json data to simple array of strings
+ * 
+ * @param {Array} lunchMenus LunchMenu data
+ * @param {Number} dayOfWeek 0-6
+ * @returns {Array} daily menu
+ */
+const parseDayMenu = (lunchMenus, dayOfWeek) => {
+  const dayMenu = lunchMenus[dayOfWeek].SetMenus.map(setMenu => {
+    const name = setMenu.Name;
+    let meals = '';
+    // TODO Clean output
+    for (const meal of setMenu.Meals){
+      meals += meal.Name + ', ';
+    };
+    return name ? name + ': ' + meals : meals;
+  });
+  return dayMenu;
+};
 
-    for (let i = 0; i < LunchMenus.length; i++) {
-        fazerCoursesFI.push({
-        SetMenus: [],
-      }); 
-      for (let j = 0; j < LunchMenus[i].SetMenus.length; j++) {
-         fazerCoursesFI[i].SetMenus.push({
-          Name: LunchMenus[i].SetMenus[j].Name,
-          Meals: [], 
-        });
-        for (let n = 0; n < LunchMenus[i].SetMenus[j].Meals.length; n++) {
-             fazerCoursesFI[i].SetMenus[j].Meals.push(
-              LunchMenus[i].SetMenus[j].Meals[n]
-            );
-            /* fazerCoursesFI.push(
-                LunchMenus[i].SetMenus[j].Meals[n]
-            ); */
-        };
-      }
-    }
-    console.log('fi menu' + fazerCoursesFI);
-  }; 
+// console.log(parseDayMenu(FazerLunchMenuFi.LunchMenus, 0));
 
-  parseFazerLunchMenuFi();
+const coursesFi = parseDayMenu(FazerLunchMenuFi.LunchMenus, 0);
+const coursesEn = parseDayMenu(FazerLunchMenuEn.LunchMenus, 0);
 
-  const parseFazerLunchMenuEn = () => {
-    const LunchMenus = FazerLunchMenuEn.LunchMenus;
-
-    for (let i = 0; i < LunchMenus.length; i++) {
-        fazerCoursesEN.push({
-        SetMenus: [],
-      }); 
-      for (let j = 0; j < LunchMenus[i].SetMenus.length; j++) {
-         fazerCoursesEN[i].SetMenus.push({
-          Name: LunchMenus[i].SetMenus[j].Name,
-          Meals: [], 
-        });
-        for (let n = 0; n < LunchMenus[i].SetMenus[j].Meals.length; n++) {
-             fazerCoursesEN[i].SetMenus[j].Meals.push(
-              LunchMenus[i].SetMenus[j].Meals[n]
-            );
-            /* fazerCoursesEN.push(
-                LunchMenus[i].SetMenus[j].Meals[n]
-            ); */
-        };
-      }
-    }
-    console.log('en menu' + fazerCoursesEN);
-  }; 
-
-  parseFazerLunchMenuEn();
-
-const FazerData = {fazerCoursesFI, fazerCoursesEN};
-export default FazerData;
+const FazerData = {coursesFi, coursesEn};
+export default FazerData;   
