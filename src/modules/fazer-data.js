@@ -24,4 +24,3 @@ const parseDayMenu = (lunchMenus, dayOfWeek) => {
 
 const FazerData = {parseDayMenu, dataUrlFi, dataUrlEn};
 export default FazerData;
-
