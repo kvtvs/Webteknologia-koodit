@@ -1,18 +1,15 @@
-import FazerData from './modules/fazer-data';
 import SodexoData from './modules/sodexo-data';
-SodexoData;
-FazerData;
-let language = 'fi';
-// let currentMenu = SodexoData.coursesFI;
+import FazerData from './modules/fazer-data';
+import {fetchData} from './modules/network';
 
-console.log(SodexoData);
-console.log(FazerData);
+let language = 'fi';
+
 /**
- * Render menu courses on page
+ * Renders menu courses on page
  */
 const renderMenu = (data, targetId) => {
-  const ulElement = document.getElementById(targetId);
-  ulElement.innerHTML = ' ';
+  const ulElement = document.querySelector('#' + targetId);
+  ulElement.innerHTML = '';
   for (const item of data) {
     const listElement = document.createElement('li');
     listElement.textContent = item;
@@ -23,7 +20,7 @@ const renderMenu = (data, targetId) => {
 /**
  * Toggle between en/fi
  */
-const langChange = () => {
+const switchLanguage = () => {
   if (language === 'fi') {
     language = 'en';
     renderMenu(SodexoData.coursesEn, 'sodexo');
@@ -36,10 +33,10 @@ const langChange = () => {
 };
 
 /**
- * Sort alphabetically
- * 
+ * Sort courses alphapetically
+ *
  * @param {Array} courses menu array
- * @param {String} order 'asc'/'desc'
+ * @param {string} order 'asc'/'desc'
  * @returns {Array} sorted menu
  */
 const sortCourses = (courses, order = 'asc') => {
@@ -50,36 +47,61 @@ const sortCourses = (courses, order = 'asc') => {
   return sortedCourses;
 };
 
-
 /**
  * Picks a random dish
- * 
- * @param {Array} courses 
- * @returns {String} random dish
+ *
+ * @param {Array} courses menu
+ * @returns {string} random dish
  */
-const randomDish = (courses) => {
+const pickARandomCourse = courses => {
   const randomIndex = Math.floor(Math.random() * courses.length);
   return courses[randomIndex];
 };
 
-
-
+/**
+ * Initialize application
+ */
 const init = () => {
 
+  /*// TODO: switch to real sodexo api data (no need to use proxy)
+  // update sodexo data module to be similar than Fazer
   renderMenu(SodexoData.coursesFi, 'sodexo');
-  renderMenu(FazerData.coursesFi, 'fazer');
+  fetchData('https://www.sodexo.fi/ruokalistat/output/weekly_json/152').then(data => {
+    console.log(data);
+  });*/
+
+  // Render Fazer
+  fetchData(SodexoData.dataUrlFi, true).then(data => {
+    // TODO: when using proxy move JSON.parse stuff to Network module??
+    const menuData = JSON.parse(data.contents);
+    // TODO: How to set correct weekday?
+    const courses = SodexoData.parseDayMenu(menuData.LunchMenus, 1);
+    renderMenu(courses, 'sodexo');
+  });
+
+  // Render Fazer
+  fetchData(FazerData.dataUrlFi, true).then(data => {
+    // TODO: when using proxy move JSON.parse stuff to Network module??
+    const menuData = JSON.parse(data.contents);
+    // TODO: How to set correct weekday?
+    const courses = FazerData.parseDayMenu(menuData.LunchMenus, 1);
+    renderMenu(courses, 'fazer');
+  });
+
   // Event listeners for buttons
-  document.getElementById('switch-lang').addEventListener('click', () => {
-    langChange();
-    renderMenu();
+  document.querySelector('#switch-lang').addEventListener('click', () => {
+    switchLanguage();
   });
-  document.getElementById('pick-random').addEventListener('click', () => {
-    alert(randomDish(currentMenu));
+  document.querySelector('#pick-random').addEventListener('click', () => {
+    // choose random dish & display it
+    alert(pickARandomCourse(currentMenu));
+
   });
-  document.getElementById('sort-menu').addEventListener('click', () => {
+  document.querySelector('#sort-menu').addEventListener('click', () => {
+    // currentMenu = sortCourses(currentMenu);
     currentMenu = sortCourses(currentMenu, 'desc');
-    // TODO fix sorting for both restaurants
-    // renderMenu();
+    // TODO: fix sorting for both restaurant
+    //renderMenu();
   });
 };
 init();
