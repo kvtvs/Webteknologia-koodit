@@ -1,4 +1,4 @@
-import SodexoData from './modules/sodexo-data';
+import SodexoData from './modules/sodexo-data.js';
 import FazerData from './modules/fazer-data';
 import {fetchData} from './modules/network';
 
@@ -65,20 +65,21 @@ const init = () => {
 
   // TODO: switch to real sodexo api data (no need to use proxy)
   // update sodexo data module to be similar than Fazer
-  renderMenu(SodexoData.coursesFi, 'sodexo');
+  /*renderMenu(SodexoData.coursesFi, 'sodexo');
   fetchData('https://www.sodexo.fi/ruokalistat/output/weekly_json/152').then(data => {
     console.log(data);
-  });
+  });*/
 
-
-  // Render Fazer
-  fetchData(SodexoData.dataUrlFi, true).then(data => {
+  // Render Sodexo
+  fetchData(SodexoData.coursesFi, true).then(data => {
     // TODO: when using proxy move JSON.parse stuff to Network module??
-    const menuData = JSON.parse(data.contents);
+    const menuSodexoData = JSON.parse(data.contents);
     // TODO: How to set correct weekday?
-    const courses = SodexoData.parseSodexoMenu(menuData.LunchMenus, 1);
+    const courses = SodexoData.parseDayMenu(menuSodexoData.courses, 1);
     renderMenu(courses, 'sodexo');
   });
+
+
 
 
   // Render Fazer
